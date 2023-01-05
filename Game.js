@@ -1,42 +1,79 @@
 var canvas, ctx;
+
 var mousePos;
+
 var rollButton = {onScreen: false};
+
 var takeButton = {onScreen: false};
+
 var passButton = {onScreen: false};
+
 var startButton = {onScreen: false};
+
 var ValidMoves = function(){
+
   this.numOfValidMoves = function(){
+
     var result = 0;
+
     for (var i in this) if (typeof this[i] === "object") result += this[i].length;
+
     return result;
+
   }
+
   setValidMoves(this);
   
   function setValidMoves(vm) {
+
     // if the player on move has men on the bar
+
     if (Board["bar"+Board.onMove.capitalizeFirstLetter()][0] > 0) {
+
       vm["bar"+Board.onMove.capitalizeFirstLetter()] = [];
+
       for (var i=0; i<Board.moves.length; i++) {
+
         if (isValid("bar" + Board.onMove.capitalizeFirstLetter(), Board.moves[i]) && vm["bar" + Board.onMove.capitalizeFirstLetter()].indexOf(Board.moves[i]) == -1) vm["bar" + Board.onMove.capitalizeFirstLetter()].push(Board.moves[i]);
+
       }
+
     }
+
     else {   // if the player on move has not any men on the bar
+
       for (var i=1; i<=24; i++) {
+
         if (Board["p"+i][1] != (Board.onMove == "black" ? 0 : 1)) continue;
+
         vm["p"+i] = [];
+
         for (var j=0; j<Board.moves.length; j++) {
+
           if (isValid("p"+i, Board.moves[j]) && vm["p"+i].indexOf(Board.moves[j]) == -1) vm["p"+i].push(Board.moves[j]);
+
         }
+
       }
+
     }
+
     //console.log("validmoves: ", vm);
+
   }
+
+  
   
   function isValid(start, number){
+  
     var startPt, target;
+  
     if (start.charAt(0) == "b") startPt = Board.onMove == "black" ? 25 : 0;
+  
     else startPt = parseInt(start.substr(1));
+  
     target = Board.onMove == "black" ? startPt-number : startPt+number;
+  
     if (Board.onMove == "black" && target <= 0) target = "offBlack";
     else if (Board.onMove == "white" && target >= 25) target = "offWhite";
     else target = "p"+target;
